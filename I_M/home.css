@@ -1,0 +1,178 @@
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #c7c2c2;
+  margin: 0;
+  padding: 0;
+}
+
+/* HEADER */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 80px;
+}
+
+.logo-left img {
+  width: 70px;
+  height: auto;
+}
+
+/* NAVIGATION */
+.nav-center {
+  background-color: #d9d9d9;
+  border-radius: 50px;
+  padding: 8px 20px;
+  display: flex;
+  gap: 25px;
+}
+
+.nav-center a {
+  text-decoration: none;
+  color: black;
+  padding: 8px 20px;
+  border-radius: 50px;
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+.nav-center a:hover,
+.nav-center a.active {
+  background-color: white;
+  font-weight: 600;
+}
+
+/* RIGHT ICON */
+.right-icons {
+  font-size: 20px;
+  color: black;
+}
+
+/* HERO SECTION */
+.hero {
+  text-align: center;
+  padding: 80px 120px;
+}
+
+.hero h2 {
+  font-size: 24px;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.hero p {
+  font-size: 14px;
+  max-width: 750px;
+  margin: 0 auto 40px auto;
+}
+
+/* COLLECTION BUTTON */
+.collection-btn {
+  background-color: black;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  padding: 10px 30px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.collection-btn:hover {
+  opacity: 0.85;
+}
+
+.arrow-circle {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  color: black;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  margin-left: 10px;
+}
+
+/* IMAGE GALLERY (pill style fix) */
+.gallery {
+  margin-top: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+}
+
+.gallery a {
+  display: block;
+  overflow: hidden;
+}
+
+.gallery img {
+  width: 280px;
+  height: 380px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+/* Rounded “connected” look */
+.gallery a:first-child img {
+  border-top-left-radius: 200px;
+  border-bottom-left-radius: 200px;
+}
+
+.gallery a:nth-child(2) img {
+  border-radius: 0;
+}
+
+.gallery a:last-child img {
+  border-top-right-radius: 200px;
+  border-bottom-right-radius: 200px;
+}
+
+.gallery img:hover {
+  transform: scale(1.05);
+}
+
+/* FOOTER */
+footer {
+  margin-top: 60px;
+  padding: 30px 80px;
+}
+
+hr {
+  border: 1px solid black;
+  margin-bottom: 20px;
+}
+
+.footer-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.footer-left,
+.footer-right {
+  font-size: 13px;
+  color: #000;
+}
+
+.footer-center {
+  text-align: center;
+}
+
+.footer-center .brand {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.socials img {
+  width: 25px;
+  margin: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.socials img:hover {
+  transform: scale(1.1);
+}
