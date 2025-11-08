@@ -1,3 +1,4 @@
+/* GLOBAL */
 body {
     font-family: 'Inter', sans-serif;
     background-color: #d1cccc;
@@ -6,45 +7,89 @@ body {
     color: #000;
 }
 
-/* Header */
+/* ===== HEADER (PILL STYLE) ===== */
 header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 25px 80px;
+    justify-content: space-between;
+    padding: 15px 80px;
 }
 
-.logo img {
-    width: 130px;
+/* LOGO */
+.logo-left img {
+    width: 200px;
     height: auto;
 }
 
-nav {
+/* ===== NAVIGATION PILL ===== */
+.nav-center {
     background-color: #e0e0e0;
-    padding: 12px 35px;
-    border-radius: 40px;
+    border-radius: 90px;
+    padding: 8px 25px;
+    display: flex;
+    gap: 30px;
 }
 
-nav a {
-    text-decoration: none;
+.nav-center a {
+    text-decoration: none;  
     color: black;
-    margin: 0 25px;
-    font-size: 18px;
+    padding: 8px 20px;
+    border-radius: 50px;
+    font-size: 16px;
+    transition: 0.3s;
     font-weight: 500;
 }
 
-nav a.active {
+.nav-center a:hover,
+.nav-center a.active {
     background-color: white;
-    padding: 6px 14px;
+    font-weight: 600;
+}
+
+/* ===== RIGHT ICONS ===== */
+.right-icons {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* CIRCLE CART BUTTON */
+.cart-btn {
+    background-color: #D4AF37;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white !important;
+    font-size: 18px;
+    text-decoration: none;
+    transition: 0.2s ease;
+}
+
+.cart-btn:hover {
+    transform: scale(1.1);
+}
+
+/* PILL LOGOUT BUTTON */
+.logout-btn {
+    background-color: #e0e0e0;
+    color: black !important;
+    padding: 8px 20px;
     border-radius: 25px;
+    font-size: 14px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.2s ease;
 }
 
-.cart img {
-    width: 36px;
-    height: 36px;
+.logout-btn:hover {
+    background-color: #cfcfcf;
+    transform: scale(1.05);
 }
 
-/* Contact Section */
+/* ===== CONTACT SECTION ===== */
 .contact-header {
     text-align: center;
     margin-top: 40px;
@@ -62,7 +107,6 @@ nav a.active {
     font-size: 18px;
 }
 
-/* Contact Content */
 .contact-content {
     display: flex;
     justify-content: center;
@@ -99,7 +143,6 @@ nav a.active {
     margin: 3px 0 0 0;
 }
 
-/* Form */
 .contact-form {
     background-color: #d9d9d9;
     padding: 50px;

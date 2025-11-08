@@ -1,0 +1,219 @@
+/* GLOBAL */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #c7c2c2;
+    margin: 0;
+    padding: 0;
+    color: #000;
+}
+
+/* ===== HEADER ===== */
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 80px; /* reduced top/bottom padding for bigger logo */
+}
+
+.logo-left img {
+    width: 200px; /* keeps width 200px */
+    height: auto;
+    display: block;
+}
+
+/* NAVIGATION PILL */
+.nav-center {
+    background-color: #d9d9d9;
+    border-radius: 90px;
+    padding: 8px 25px;
+    display: flex;
+    gap: 30px;
+}
+
+.nav-center a {
+    text-decoration: none;  
+    color: black;
+    padding: 8px 20px;
+    border-radius: 50px;
+    font-size: 16px;
+    transition: 0.3s;
+    font-weight: 500;
+}
+
+.nav-center a:hover,
+.nav-center a.active {
+    background-color: white;
+    font-weight: 600;
+}
+
+/* RIGHT ICONS */
+.right-icons {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.cart-btn {
+    background-color: #D4AF37;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white !important;
+    font-size: 18px;
+    text-decoration: none;
+    transition: 0.2s ease;
+}
+
+.cart-btn:hover {
+    transform: scale(1.1);
+}
+
+.logout-btn {
+    background-color: #d9d9d9;
+    color: black !important;
+    padding: 8px 20px;
+    border-radius: 25px;
+    font-size: 14px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.2s ease;
+}
+
+.logout-btn:hover {
+    background-color: #bfbfbf;
+    transform: scale(1.05);
+}
+
+/* ===== MAIN LAYOUT ===== */
+.products-main {
+    display: flex;
+    padding: 40px 80px;
+    gap: 40px;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 220px;
+    background-color: #d9d9d9;
+    border-radius: 20px;
+    padding: 20px;
+    font-weight: 500;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.sidebar h3 {
+    margin-bottom: 20px;
+    font-size: 18px;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-grow: 1; /* pushes the message to the bottom */
+}
+
+.sidebar-message {
+    font-size: 14px;
+    margin-top: 15px;
+    color: #333;
+}
+
+/* FIXED LINKS */
+.sidebar ul li {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.sidebar ul li:hover,
+.sidebar ul li.active {
+    background-color: #bfbfbf;
+}
+
+.sidebar ul li a {
+    text-decoration: none; /* remove underline */
+    color: black;          /* keep black text */
+    display: block;
+}
+
+.sidebar ul li a:hover {
+    color: black;
+}
+
+.sidebar ul li.active a {
+    font-weight: 600;
+    color: #D4AF37; /* highlight active category */
+}
+
+/* PRODUCTS GRID */
+.products-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+/* PRODUCT CARD */
+.product-card {
+    background-color: #d9d9d9;
+    border-radius: 15px;
+    padding: 15px;
+    text-align: center;
+}
+
+.product-card img {
+    width: 100%;
+    height: 300px;       /* taller to make it vertically long */
+    object-fit: cover;   /* ensures the image fills the box without stretching */
+    border-radius: 12px;
+    margin-bottom: 10px;
+    transition: transform 0.3s;
+}
+
+.product-card h4 {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.product-buttons {
+    display: flex;
+    justify-content: space-around;
+    gap: 10px;
+}
+
+.add-btn,
+.buy-btn {
+    padding: 8px 15px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.add-btn {
+    background-color: #D4AF37;
+    color: white;
+}
+
+.add-btn:hover {
+    background-color: #b6932f;
+    transform: scale(1.05);
+}
+
+.buy-btn {
+    background-color: #000;
+    color: white;
+}
+
+.buy-btn:hover {
+    background-color: #333;
+    transform: scale(1.05);
+}

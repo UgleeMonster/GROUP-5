@@ -33,7 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <title>Login - New Dawn Thrift</title>
     <link href="https://fonts.googleapis.com/css?family=Inter:400,600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="design.css">
 </head>
 <body>
     <div class="container">

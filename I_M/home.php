@@ -4,9 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Home - New Dawn Thrift</title>
-  <link rel="stylesheet" href="home.css">
+  <link rel="stylesheet" href="./home.css?v=3">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-  <script src="https://kit.fontawesome.com/4e5f51c5b5.js" crossorigin="anonymous"></script>
+
+  <!-- Working Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 </head>
 <body>
 
@@ -18,13 +20,14 @@
 
     <nav class="nav-center">
       <a href="#" class="active">HOME</a>
-      <a href="product.php">PRODUCT</a>
-      <a href="#">ABOUT US</a>
-      <a href="contactus.html">CONTACT US</a>
+      <a href="product1.php">PRODUCT</a>
+      <a href="aboutus.html">ABOUT US</a>
+      <a href="contactus.php">CONTACT US</a>
     </nav>
 
     <div class="right-icons">
-      <i class="fas fa-shopping-cart"></i>
+      <a href="cart.php" class="cart-btn" aria-label="Cart"><i class="fas fa-shopping-cart"></i></a>
+      <a href="login.php" class="logout-btn">Logout</a>
     </div>
   </header>
 
@@ -34,14 +37,14 @@
       <h2>Where vintage charm meets modern style,<br>giving fashion a second chance to shine.</h2>
       <p>Unveiling a thrift destination where every piece has a past, yet speaks to the present. Here, fashion finds new life, sustainability becomes style, and your wardrobe grows with unique treasures that tell a story worth wearing.</p>
 
-      <button class="collection-btn" onclick="window.location.href='product.php'">
+      <button class="collection-btn" onclick="window.location.href='product4.php'">
         New Collection <span class="arrow-circle"><i class="fas fa-arrow-right"></i></span>
       </button>
 
       <div class="gallery">
-        <a href="product.php"><img src="LEFT.jpg" alt="Left"></a>
-        <a href="product.php"><img src="MIDDLE.jpg" alt="Middle"></a>
-        <a href="product.php"><img src="RIGHT.jpg" alt="Right"></a>
+        <a href="product1.php"><img src="LEFT.jpg" alt="Left"></a>
+        <a href="product2.php"><img src="MIDDLE.jpg" alt="Middle"></a>
+        <a href="product3.php"><img src="RIGHT.jpg" alt="Right"></a>
       </div>
     </div>
   </main>

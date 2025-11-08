@@ -1,178 +1,208 @@
-body {
-  font-family: 'Inter', sans-serif;
-  background-color: #c7c2c2;
-  margin: 0;
-  padding: 0;
-}
+  /* GLOBAL */
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: #c7c2c2;
+    margin: 0;
+    padding: 0;
+    color: #000;
+  }
 
-/* HEADER */
-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 80px;
-}
+  /* ===== HEADER (PILL STYLE) ===== */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2px 90px;
+  }
 
-.logo-left img {
-  width: 70px;
-  height: auto;
-}
+  /* LOGO */
+  .logo-left img {
+    width: 200px;
+    height: auto;
+  }
 
-/* NAVIGATION */
-.nav-center {
-  background-color: #d9d9d9;
-  border-radius: 50px;
-  padding: 8px 20px;
-  display: flex;
-  gap: 25px;
-}
+  /* ===== NAVIGATION PILL ===== */
+  .nav-center {
+    background-color: #d9d9d9;
+    border-radius: 90px;
+    padding: 8px 25px;
+    display: flex;
+    gap: 30px;
+  }
 
-.nav-center a {
-  text-decoration: none;
-  color: black;
-  padding: 8px 20px;
-  border-radius: 50px;
-  font-size: 14px;
-  transition: 0.3s;
-}
+  .nav-center a {
+    text-decoration: none;  
+    color: black;
+    padding: 10px 22px;
+    border-radius: 50px;
+    font-size: 14px;
+    transition: 0.3s;
+    font-weight: 500;
+  }
 
-.nav-center a:hover,
-.nav-center a.active {
-  background-color: white;
-  font-weight: 600;
-}
+  .nav-center a:hover,
+  .nav-center a.active {
+    background-color: white;
+    font-weight: 600;
+  }
 
-/* RIGHT ICON */
-.right-icons {
-  font-size: 20px;
-  color: black;
-}
+  /* ===== RIGHT ICONS ===== */
+  .right-icons {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
 
-/* HERO SECTION */
-.hero {
-  text-align: center;
-  padding: 80px 120px;
-}
+  /* CIRCLE CART BUTTON */
+  .cart-btn {
+    background-color: #D4AF37;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white !important;
+    font-size: 18px;
+    text-decoration: none;
+    transition: 0.2s ease;
+  }
 
-.hero h2 {
-  font-size: 24px;
-  margin-bottom: 15px;
-  font-weight: 600;
-}
+  .cart-btn:hover {
+    transform: scale(1.1);
+  }
 
-.hero p {
-  font-size: 14px;
-  max-width: 750px;
-  margin: 0 auto 40px auto;
-}
+  /* PILL LOGOUT BUTTON */
+  .logout-btn {
+    background-color: #d9d9d9;
+    color: black !important;
+    padding: 8px 20px;
+    border-radius: 25px;
+    font-size: 14px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.2s ease;
+  }
 
-/* COLLECTION BUTTON */
-.collection-btn {
-  background-color: black;
-  color: white;
-  border: none;
-  border-radius: 30px;
-  padding: 10px 30px;
-  font-size: 15px;
-  cursor: pointer;
-  transition: 0.3s;
-}
+  .logout-btn:hover {
+    background-color: #bfbfbf;
+    transform: scale(1.05);
+  }
 
-.collection-btn:hover {
-  opacity: 0.85;
-}
+  /* ===== MAIN SECTION ===== */
+  main {
+    text-align: center;
+    padding: 60px 0;
+  }
 
-.arrow-circle {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  background-color: white;
-  color: black;
-  border-radius: 50%;
-  width: 22px;
-  height: 22px;
-  margin-left: 10px;
-}
+  .hero h2 {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 15px;
+  }
 
-/* IMAGE GALLERY (pill style fix) */
+  .hero p {
+    max-width: 700px;
+    margin: 0 auto 30px;
+    line-height: 1.6;
+  }
+
+  /* COLLECTION BUTTON */
+  .collection-btn {
+    background-color: #D4AF37;
+    color: white;
+    padding: 12px 30px;
+    font-size: 16px;
+    border-radius: 40px;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: 0.2s ease;
+  }
+
+  .collection-btn:hover {
+    background-color: #b6932f;
+    transform: scale(1.05);
+  }
+
+  .arrow-circle {
+    background: white;
+    border-radius: 50%;
+    padding: 6px;
+    color: #D4AF37;
+  }
+
+/* ===== GALLERY - SINGLE PILL WITH CLICKABLE IMAGES ===== */
 .gallery {
-  margin-top: 60px;
+  margin-top: 90px;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: #d9d9d9;
+  border-radius: 250px;   /* large pill shape */
+  overflow: hidden;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0;
+  justify-content: space-between; /* even spacing */
+  padding: 0px;  /* slimmer pill */
+  box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
 }
 
 .gallery a {
+  flex: 1; /* each image fills equally inside pill */
   display: block;
   overflow: hidden;
 }
 
 .gallery img {
-  width: 280px;
-  height: 380px;
-  object-fit: cover;
-  transition: transform 0.3s ease;
-}
-
-/* Rounded “connected” look */
-.gallery a:first-child img {
-  border-top-left-radius: 200px;
-  border-bottom-left-radius: 200px;
-}
-
-.gallery a:nth-child(2) img {
-  border-radius: 0;
-}
-
-.gallery a:last-child img {
-  border-top-right-radius: 200px;
-  border-bottom-right-radius: 200px;
+  width: 100%;
+  height: 200px;      /* adjust height for balance */
+  object-fit: cover;  /* crop nicely */
+  display: block;
+  transition: transform 0.3s ease-in-out;
 }
 
 .gallery img:hover {
-  transform: scale(1.05);
-}
-
-/* FOOTER */
-footer {
-  margin-top: 60px;
-  padding: 30px 80px;
-}
-
-hr {
-  border: 1px solid black;
-  margin-bottom: 20px;
-}
-
-.footer-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-}
-
-.footer-left,
-.footer-right {
-  font-size: 13px;
-  color: #000;
-}
-
-.footer-center {
-  text-align: center;
-}
-
-.footer-center .brand {
-  font-weight: 600;
-  font-size: 15px;
-}
-
-.socials img {
-  width: 25px;
-  margin: 5px;
+  transform: scale(1.05); /* subtle zoom on hover */
   cursor: pointer;
-  transition: 0.3s;
 }
 
-.socials img:hover {
-  transform: scale(1.1);
-}
+  /* ===== FOOTER ===== */
+  footer {
+    background-color: #d9d9d9;
+    padding: 35px 80px;
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+  }
+
+  hr {
+    border: 1px solid black;
+    margin-bottom: 20px;
+  }
+
+  .footer-container {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .footer-left p,
+  .footer-right p {
+    margin: 5px 0;
+    font-size: 13px;
+  }
+
+  .footer-center .brand {
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .socials img {
+    width: 25px;
+    margin: 5px;
+    transition: 0.3s;
+  }
+
+  .socials img:hover {
+    transform: scale(1.1);
+  }
