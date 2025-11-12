@@ -133,6 +133,7 @@
     padding: 6px;
     color: #D4AF37;
   }
+  
 
 /* ===== GALLERY - SINGLE PILL WITH CLICKABLE IMAGES ===== */
 .gallery {
@@ -206,3 +207,4 @@
   .socials img:hover {
     transform: scale(1.1);
   }
+  

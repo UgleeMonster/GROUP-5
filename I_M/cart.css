@@ -1,0 +1,375 @@
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #c7c2c2;
+    margin: 0;
+    padding: 0;
+    color: #000;
+}
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 80px;
+    background-color: #c7c2c2;
+}
+
+.logo-left img {
+    width: 200px;
+    height: auto;
+}
+
+.nav-center {
+    background-color: #d9d9d9;
+    border-radius: 90px;
+    padding: 8px 25px;
+    display: flex;
+    gap: 30px;
+}
+
+.nav-center a {
+    text-decoration: none;
+    color: black;
+    padding: 8px 20px;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.nav-center a:hover {
+    background-color: white;
+    font-weight: 600;
+}
+
+.right-icons {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.cart-btn {
+    background-color: #D4AF37;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white !important;
+    font-size: 18px;
+    text-decoration: none;
+}
+
+.cart-btn:hover {
+    transform: scale(1.1);
+}
+
+.logout-btn {
+    background-color: #d9d9d9;
+    color: black !important;
+    padding: 8px 20px;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.logout-btn:hover {
+    background-color: #bfbfbf;
+    transform: scale(1.05);
+}
+
+/* --- Cart Main --- */
+.cart-main {
+    padding: 40px 80px;
+}
+
+/* Columns & Rows */
+.cart-columns,
+.cart-item-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.cart-columns {
+    font-weight: 600;
+    border-bottom: 2px solid #d9d9d9;
+}
+
+.cart-columns div,
+.cart-item-row div {
+    text-align: center;
+}
+
+.id-col {
+    flex: 0.5;
+}
+
+.image-col {
+    flex: 1.2;
+}
+
+.name-col {
+    flex: 2;
+    text-align: left;
+}
+
+.price-col {
+    flex: 1;
+}
+
+.quantity-col {
+    flex: 1.2;
+}
+
+.total-col {
+    flex: 1;
+}
+
+.actions-col {
+    flex: 0.8;
+}
+
+.select-col {
+    flex: 0.5;
+}
+
+/* Cart Item Row */
+.cart-item-row {
+    background-color: #f5f5f5;
+    padding: 12px;
+    overflow: hidden;
+}
+
+.cart-item-row img {
+    width: 100px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+/* Quantity Controls */
+.quantity-control {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.quantity-control input {
+    width: 50px;
+    text-align: center;
+    border-radius: 8px;
+    padding: 5px;
+    border: 1px solid #ccc;
+}
+
+.quantity-control button {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 6px;
+    background-color: #D4AF37;
+    color: white;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.quantity-control button:hover {
+    background-color: #b6932f;
+}
+
+/* Delete Button */
+.delete-btn {
+    background-color: #dc2626;
+    color: white;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.delete-btn:hover {
+    background-color: #b91c1c;
+}
+
+/* Cart Totals Box */
+.cart-totals-box {
+    max-width: 400px;
+    margin-left: auto;
+    background-color: #f5f5f5;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    font-size: 18px;
+}
+
+.cart-totals-box p {
+    margin: 10px 0;
+}
+
+.checkout-btn {
+    display: block;
+    width: 100%;
+    padding: 12px 0;
+    background-color: #1f2937;
+    color: white;
+    font-weight: 600;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    text-align: center;
+    margin-top: 15px;
+    text-decoration: none;
+}
+
+.empty-row {
+    text-align: center;
+    font-style: italic;
+    color: #555;
+    padding: 30px;
+    flex: 1;
+}
+
+/* Out-of-Stock Overlay */
+.out-of-stock {
+    pointer-events: auto;
+    position: relative;
+}
+
+.out-of-stock::after {
+    content: "OUT OF STOCK";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.7);
+    color: white;
+    padding: 10px 60px;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+.out-of-stock .delete-btn {
+    filter: none;
+    pointer-events: auto;
+}
+
+/* Disable interactions for other elements except delete button */
+.out-of-stock > *:not(.actions-col) {
+    pointer-events: none;
+    filter: grayscale(100%) brightness(50%);
+}
+/* ===== PROFILE DROPDOWN ===== */
+.profile-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.profile-btn {
+    background-color: #D4AF37;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    cursor: pointer;
+    border: none;
+    transition: 0.2s ease;
+}
+
+.profile-btn:hover {
+    transform: scale(1.1);
+}
+
+.profile-dropdown {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background: linear-gradient(145deg, #f5f5f5, #e0e0e0);
+    padding: 15px;
+    border-radius: 15px;
+    width: 240px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+    transform: translateY(-20px);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 100;
+}
+
+.profile-dropdown.show {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+}
+
+.profile-card-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    padding-bottom: 10px;
+}
+
+.avatar-emoji {
+    font-size: 40px;
+    margin-bottom: 5px;
+}
+
+.username {
+    font-weight: 600;
+    font-size: 16px;
+    color: #333;
+}
+
+.profile-card-body p {
+    font-size: 14px;
+    color: #555;
+    margin: 6px 0;
+    padding: 3px 6px;
+    border-radius: 8px;
+    transition: background 0.2s ease;
+}
+
+.profile-card-body p:hover {
+    background: rgba(212, 175, 55, 0.1);
+}
+
+.profile-dropdown .logout-btn {
+    display: block;
+    margin-top: 12px;
+    text-align: center;
+    background-color: #ff4d4d;
+    color: white !important;
+    padding: 8px 15px;
+    border-radius: 25px;
+    font-size: 14px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.2s ease;
+}
+
+.profile-dropdown .logout-btn:hover {
+    background-color: #e63939;
+    transform: scale(1.05);
+}
+
+.profile-dropdown::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    right: 22px;
+    border-width: 0 8px 8px 8px;
+    border-style: solid;
+    border-color: transparent transparent #f5f5f5 transparent;
+}

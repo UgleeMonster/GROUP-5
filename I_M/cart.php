@@ -8,6 +8,17 @@ if (!isset($_SESSION['username'])) {
 }
 
 $username = $_SESSION['username'];
+// Fetch current user info
+$userQuery = $conn->prepare("SELECT email, role FROM users WHERE username=? LIMIT 1");
+$userQuery->bind_param("s", $username);
+$userQuery->execute();
+$userResult = $userQuery->get_result();
+$userData = $userResult->fetch_assoc();
+
+// Fallback in case something is missing
+$email = $userData['email'] ?? 'No email';
+$role  = $userData['role'] ?? 'Customer';
+
 
 // Handle delete via AJAX
 if (isset($_POST['delete_item'])) {
@@ -15,9 +26,9 @@ if (isset($_POST['delete_item'])) {
     $conn->query("DELETE FROM cart WHERE id=$cart_id AND username='$username'");
 }
 
-// Fetch cart items
+// Fetch cart items with stock info
 $cart_items = $conn->query("
-    SELECT cart.id AS cart_id, products.id AS product_id, products.name, products.price, products.image, cart.quantity
+    SELECT cart.id AS cart_id, products.id AS product_id, products.name, products.price, products.image, products.stock, cart.quantity
     FROM cart 
     JOIN products ON cart.product_id = products.id
     WHERE cart.username='$username'
@@ -31,52 +42,14 @@ $cart_items = $conn->query("
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cart - New Dawn Thrift</title>
-<link rel="stylesheet" href="products.css">
+
+<!-- External Stylesheet -->
+<link rel="stylesheet" href="cart.css?v=5">
+
+<!-- Fonts & Icons -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-<style>
-/* --- Same design as before --- */
-header { display:flex; justify-content:space-between; align-items:center; padding:15px 80px; }
-.logo-left img { width:200px; height:auto; }
-.nav-center { background-color:#d9d9d9; border-radius:90px; padding:8px 25px; display:flex; gap:30px; }
-.nav-center a { text-decoration:none; color:black; padding:8px 20px; border-radius:50px; font-size:16px; font-weight:500; transition:0.3s; }
-.nav-center a:hover { background-color:white; font-weight:600; }
-.right-icons { display:flex; align-items:center; gap:15px; }
-.cart-btn { background-color:#D4AF37; width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white !important; font-size:18px; text-decoration:none; }
-.cart-btn:hover { transform:scale(1.1); }
-.logout-btn { background-color:#d9d9d9; color:black !important; padding:8px 20px; border-radius:25px; font-size:14px; font-weight:500; }
-.logout-btn:hover { background-color:#bfbfbf; transform:scale(1.05); }
 
-.cart-main { padding:40px 80px; }
-.cart-columns, .cart-item-row { display:flex; align-items:center; gap:10px; padding:10px; border-radius:12px; margin-bottom:10px; }
-.cart-columns { font-weight:600; border-bottom:2px solid #d9d9d9; }
-.cart-columns div, .cart-item-row div { text-align:center; }
-.cart-columns .id-col, .cart-item-row .id-col { flex:0.5; }
-.cart-columns .image-col, .cart-item-row .image-col { flex:1.2; }
-.cart-columns .name-col, .cart-item-row .name-col { flex:2; text-align:left; }
-.cart-columns .price-col, .cart-item-row .price-col { flex:1; }
-.cart-columns .quantity-col, .cart-item-row .quantity-col { flex:1.2; }
-.cart-columns .total-col, .cart-item-row .total-col { flex:1; }
-.cart-columns .actions-col, .cart-item-row .actions-col { flex:0.8; }
-.cart-columns .select-col, .cart-item-row .select-col { flex:0.5; }
-
-.cart-item-row { background-color:#f5f5f5; padding:12px; }
-.cart-item-row img { width:100px; height:150px; object-fit:cover; border-radius:10px; }
-
-.quantity-control { display:flex; align-items:center; justify-content:center; gap:5px; }
-.quantity-control input { width:50px; text-align:center; border-radius:8px; padding:5px; border:1px solid #ccc; }
-.quantity-control button { padding:5px 10px; border:none; border-radius:6px; background-color:#D4AF37; color:white; cursor:pointer; }
-.quantity-control button:hover { background-color:#b6932f; }
-
-.delete-btn { background-color: #dc2626; color:white; padding: 6px 12px; border:none; border-radius:6px; cursor:pointer; }
-.delete-btn:hover { background-color:#b91c1c; }
-
-.cart-totals-box { max-width:400px; margin-left:auto; background-color:#f5f5f5; padding:20px; border-radius:12px; box-shadow:0 3px 8px rgba(0,0,0,0.1); font-size:18px; }
-.cart-totals-box p { margin:10px 0; }
-.checkout-btn { display:block; width:100%; padding:12px 0; background-color:#1f2937; color:white; font-weight:600; border-radius:8px; border:none; cursor:pointer; font-size:18px; text-align:center; margin-top:15px; text-decoration:none; }
-
-.empty-row { text-align:center; font-style:italic; color:#555; padding:30px; flex:1; }
-</style>
 </head>
 <body>
 
@@ -85,13 +58,29 @@ header { display:flex; justify-content:space-between; align-items:center; paddin
     <nav class="nav-center">
         <a href="home.php">Home</a>
         <a href="product1.php">Products</a>
-        <a href="aboutus.html">About Us</a>
+        <a href="aboutus.php">About Us</a>
         <a href="contactus.php">Contact us</a>
     </nav>
     <div class="right-icons">
-        <a href="cart.php" class="cart-btn"><i class="fas fa-shopping-cart"></i></a>
-        <a href="login.php" class="logout-btn">Logout</a>
+    <a href="cart.php" class="cart-btn"><i class="fas fa-shopping-cart"></i></a>
+
+    <!-- PROFILE ICON -->
+    <div class="profile-wrapper">
+        <button class="profile-btn">👤</button>
+        <div class="profile-dropdown">
+            <div class="profile-card-header">
+                <div class="avatar-emoji">👤</div>
+                <div class="username"><?= htmlspecialchars($username) ?></div>
+            </div>
+            <div class="profile-card-body">
+                <p>Email: <?= htmlspecialchars($email) ?></p>
+                <p>Role: <?= htmlspecialchars($role) ?></p>
+                <a href="login.php" class="logout-btn">Logout</a>
+            </div>
+        </div>
     </div>
+</div>
+
 </header>
 
 <main class="cart-main">
@@ -113,17 +102,22 @@ header { display:flex; justify-content:space-between; align-items:center; paddin
 $counter = 1;
 if($cart_items->num_rows > 0):
     while ($item = $cart_items->fetch_assoc()):
+        $isOut = $item['stock'] <= 0;
 ?>
-<div class="cart-item-row" data-id="<?= $item['cart_id'] ?>" data-price="<?= $item['price'] ?>">
+<div class="cart-item-row <?= $isOut ? 'out-of-stock' : '' ?>" 
+     data-id="<?= $item['cart_id'] ?>" 
+     data-price="<?= $item['price'] ?>" 
+     data-stock="<?= $item['stock'] ?>" 
+     data-name="<?= htmlspecialchars($item['name']) ?>">
     <div class="id-col"><?= $counter++ ?></div>
     <div class="image-col"><img src="<?= $item['image'] ?>" alt="<?= $item['name'] ?>"></div>
     <div class="name-col"><?= $item['name'] ?></div>
     <div class="price-col">₱<span class="item-price"><?= number_format($item['price'],2) ?></span></div>
     <div class="quantity-col">
         <div class="quantity-control">
-            <button type="button" class="dec-btn">-</button>
+            <button type="button" class="dec-btn" <?= $isOut ? 'disabled' : '' ?>>-</button>
             <input type="number" class="qty-display" value="<?= $item['quantity'] ?>" readonly>
-            <button type="button" class="inc-btn">+</button>
+            <button type="button" class="inc-btn" <?= $isOut ? 'disabled' : '' ?>>+</button>
         </div>
     </div>
     <div class="total-col">₱<span class="item-total"><?= number_format($item['price']*$item['quantity'],2) ?></span></div>
@@ -131,7 +125,7 @@ if($cart_items->num_rows > 0):
         <button type="button" class="delete-btn">Delete</button>
     </div>
     <div class="select-col">
-        <input type="checkbox" class="item-checkbox">
+        <input type="checkbox" class="item-checkbox" <?= $isOut ? 'disabled' : '' ?>>
     </div>
 </div>
 <?php
@@ -152,12 +146,26 @@ else:
 </form>
 
 <script>
+const profileBtn = document.querySelector('.profile-btn');
+const profileDropdown = document.querySelector('.profile-dropdown');
+
+profileBtn.addEventListener('click', () => {
+    profileDropdown.classList.toggle('show');
+});
+
+// Close dropdown if clicked outside
+window.addEventListener('click', function(e) {
+    if (!profileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
+        profileDropdown.classList.remove('show');
+    }
+});
+
+// --- Cart JS Functionality ---
 const subtotalEl = document.getElementById('subtotal');
 const shippingEl = document.getElementById('shipping');
 const grandtotalEl = document.getElementById('grandtotal');
 const shippingFee = 5;
 
-// Update row total individually
 function updateRowTotal(row) {
     const price = parseFloat(row.dataset.price);
     const qty = parseInt(row.querySelector('.qty-display').value);
@@ -166,15 +174,14 @@ function updateRowTotal(row) {
     return rowTotal;
 }
 
-// Update bottom totals (only for checked items)
 function updateTotals() {
     let subtotal = 0;
     let shipping = 0;
 
     document.querySelectorAll('.cart-item-row:not(.empty-row)').forEach(row=>{
-        updateRowTotal(row); // always update row total visually
+        updateRowTotal(row);
         const checkbox = row.querySelector('.item-checkbox');
-        if(checkbox.checked){
+        if(checkbox && checkbox.checked){
             subtotal += parseFloat(row.querySelector('.item-total').textContent);
             shipping += shippingFee;
         }
@@ -185,16 +192,17 @@ function updateTotals() {
     grandtotalEl.textContent = (subtotal + shipping).toFixed(2);
 }
 
-// Initial totals
 updateTotals();
 
-// Quantity buttons, DB update, delete button, and checkbox listener
 document.querySelectorAll('.cart-item-row:not(.empty-row)').forEach(row=>{
     const dec = row.querySelector('.dec-btn');
     const inc = row.querySelector('.inc-btn');
     const qtyInput = row.querySelector('.qty-display');
     const checkbox = row.querySelector('.item-checkbox');
     const cart_id = row.dataset.id;
+    const stock = parseInt(row.dataset.stock);
+
+    if(!dec || !inc) return; // skip out-of-stock
 
     function updateDB(qty){
         fetch('update_cart_quantity.php', {
@@ -214,13 +222,16 @@ document.querySelectorAll('.cart-item-row:not(.empty-row)').forEach(row=>{
 
     inc.addEventListener('click', ()=>{
         let qty = parseInt(qtyInput.value);
-        qty++;
-        qtyInput.value = qty;
-        updateTotals();
-        updateDB(qty);
+        if(qty < stock){
+            qty++;
+            qtyInput.value = qty;
+            updateTotals();
+            updateDB(qty);
+        } else {
+            alert(`Cannot add more. Only ${stock} in stock.`);
+        }
     });
 
-    // Delete button
     row.querySelector('.delete-btn').addEventListener('click', ()=>{
         if(confirm('Are you sure you want to delete this item?')){
             fetch('cart.php',{
@@ -230,26 +241,29 @@ document.querySelectorAll('.cart-item-row:not(.empty-row)').forEach(row=>{
             }).then(()=>{
                 row.remove();
                 updateTotals();
-                if(document.querySelectorAll('.cart-item-row:not(.empty-row)').length===0){
-                    const emptyRow = document.createElement('div');
-                    emptyRow.classList.add('cart-item-row','empty-row');
-                    emptyRow.textContent = "Your cart is empty.";
-                    document.getElementById('checkoutForm').insertBefore(emptyRow, document.querySelector('.cart-totals-box'));
-                }
             });
         }
     });
 
-    // Checkbox change
-    checkbox.addEventListener('change', updateTotals);
+    if(checkbox) checkbox.addEventListener('change', updateTotals);
 });
 
-// Checkout button
 document.getElementById('checkoutBtn').addEventListener('click', ()=>{
     const selected = document.querySelectorAll('.item-checkbox:checked');
     if(selected.length===0){
         alert('Please select at least one item to checkout.');
         return;
+    }
+
+    for(const cb of selected){
+        const row = cb.closest('.cart-item-row');
+        const qty = parseInt(row.querySelector('.qty-display').value);
+        const stock = parseInt(row.dataset.stock);
+        const name = row.dataset.name;
+        if(qty > stock){
+            alert(`Cannot checkout "${name}". Only ${stock} in stock.`);
+            return;
+        }
     }
 
     const form = document.getElementById('checkoutForm');
