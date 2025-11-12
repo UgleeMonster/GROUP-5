@@ -9,7 +9,7 @@ if (!isset($_SESSION['username'])) {
 
 $username = $_SESSION['username'];
 
-// Fetch user's info
+ 
 $user = $conn->query("SELECT username, email, role FROM users WHERE username='$username'")->fetch_assoc();
 ?>
 
@@ -23,7 +23,7 @@ $user = $conn->query("SELECT username, email, role FROM users WHERE username='$u
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 <style>
-/* ===== PROFILE ICON ===== */
+ 
 .profile-wrapper {
     position: relative;
 }
@@ -48,8 +48,8 @@ $user = $conn->query("SELECT username, email, role FROM users WHERE username='$u
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
-/* Animated dropdown */
-/* Profile dropdown upgraded */
+ 
+ 
 .profile-dropdown {
     position: absolute;
     top: 50px;
@@ -67,14 +67,14 @@ $user = $conn->query("SELECT username, email, role FROM users WHERE username='$u
     font-family: 'Inter', sans-serif;
 }
 
-/* Show animation */
+ 
 .profile-dropdown.show {
     transform: translateY(0);
     opacity: 1;
     visibility: visible;
 }
 
-/* Header with avatar */
+ 
 .profile-card-header {
     display: flex;
     flex-direction: column;
@@ -95,7 +95,7 @@ $user = $conn->query("SELECT username, email, role FROM users WHERE username='$u
     color: #333;
 }
 
-/* Body text */
+ 
 .profile-card-body p {
     font-size: 14px;
     color: #555;
@@ -106,10 +106,10 @@ $user = $conn->query("SELECT username, email, role FROM users WHERE username='$u
 }
 
 .profile-card-body p:hover {
-    background: rgba(212, 175, 55, 0.1); /* subtle gold highlight on hover */
+    background: rgba(212, 175, 55, 0.1);  
 }
 
-/* Logout button */
+ 
 .profile-dropdown .logout-btn {
     display: block;
     margin-top: 12px;
@@ -129,7 +129,7 @@ $user = $conn->query("SELECT username, email, role FROM users WHERE username='$u
     transform: scale(1.05);
 }
 
-/* Arrow indicator */
+ 
 .profile-dropdown::before {
     content: '';
     position: absolute;
@@ -224,7 +224,7 @@ $user = $conn->query("SELECT username, email, role FROM users WHERE username='$u
 </footer>
 
 <script>
-// Toggle profile dropdown with animation
+ 
 const profileBtn = document.getElementById('profileBtn');
 const profileDropdown = document.getElementById('profileDropdown');
 
@@ -232,7 +232,7 @@ profileBtn.addEventListener('click', () => {
     profileDropdown.classList.toggle('show');
 });
 
-// Close dropdown if clicked outside
+ 
 document.addEventListener('click', function(event) {
     if (!profileBtn.contains(event.target) && !profileDropdown.contains(event.target)) {
         profileDropdown.classList.remove('show');

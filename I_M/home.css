@@ -1,4 +1,4 @@
-  /* GLOBAL */
+   
   body {
     font-family: 'Inter', sans-serif;
     background-color: #c7c2c2;
@@ -7,7 +7,7 @@
     color: #000;
   }
 
-  /* ===== HEADER (PILL STYLE) ===== */
+   
   header {
     display: flex;
     align-items: center;
@@ -15,13 +15,13 @@
     padding: 2px 90px;
   }
 
-  /* LOGO */
+   
   .logo-left img {
     width: 200px;
     height: auto;
   }
 
-  /* ===== NAVIGATION PILL ===== */
+   
   .nav-center {
     background-color: #d9d9d9;
     border-radius: 90px;
@@ -46,14 +46,14 @@
     font-weight: 600;
   }
 
-  /* ===== RIGHT ICONS ===== */
+   
   .right-icons {
     display: flex;
     align-items: center;
     gap: 15px;
   }
 
-  /* CIRCLE CART BUTTON */
+   
   .cart-btn {
     background-color: #D4AF37;
     width: 40px;
@@ -72,7 +72,7 @@
     transform: scale(1.1);
   }
 
-  /* PILL LOGOUT BUTTON */
+   
   .logout-btn {
     background-color: #d9d9d9;
     color: black !important;
@@ -89,7 +89,7 @@
     transform: scale(1.05);
   }
 
-  /* ===== MAIN SECTION ===== */
+   
   main {
     text-align: center;
     padding: 60px 0;
@@ -107,7 +107,7 @@
     line-height: 1.6;
   }
 
-  /* COLLECTION BUTTON */
+   
   .collection-btn {
     background-color: #D4AF37;
     color: white;
@@ -135,41 +135,41 @@
   }
   
 
-/* ===== GALLERY - SINGLE PILL WITH CLICKABLE IMAGES ===== */
+ 
 .gallery {
   margin-top: 90px;
   width: 90%;
   margin-left: auto;
   margin-right: auto;
   background-color: #d9d9d9;
-  border-radius: 250px;   /* large pill shape */
+  border-radius: 250px;    
   overflow: hidden;
   display: flex;
-  justify-content: space-between; /* even spacing */
-  padding: 0px;  /* slimmer pill */
+  justify-content: space-between;  
+  padding: 0px;   
   box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
 }
 
 .gallery a {
-  flex: 1; /* each image fills equally inside pill */
+  flex: 1;  
   display: block;
   overflow: hidden;
 }
 
 .gallery img {
   width: 100%;
-  height: 200px;      /* adjust height for balance */
-  object-fit: cover;  /* crop nicely */
+  height: 200px;       
+  object-fit: cover;   
   display: block;
   transition: transform 0.3s ease-in-out;
 }
 
 .gallery img:hover {
-  transform: scale(1.05); /* subtle zoom on hover */
+  transform: scale(1.05);  
   cursor: pointer;
 }
 
-  /* ===== FOOTER ===== */
+   
   footer {
     background-color: #d9d9d9;
     padding: 35px 80px;

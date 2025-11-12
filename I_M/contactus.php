@@ -2,7 +2,7 @@
 session_start();
 include "db/dbconnect.php";
 
-// Check if user is logged in
+ 
 if (!isset($_SESSION['username'])) {
     header("Location: login.php");
     exit();
@@ -10,7 +10,7 @@ if (!isset($_SESSION['username'])) {
 
 $username = $_SESSION['username'];
 
-// Fetch current user info from database
+ 
 $userQuery = $conn->prepare("SELECT email, role FROM users WHERE username=? LIMIT 1");
 $userQuery->bind_param("s", $username);
 $userQuery->execute();

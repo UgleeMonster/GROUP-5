@@ -11,7 +11,7 @@ if (isset($_POST['product_id'])) {
     $username = $_SESSION['username'];
     $product_id = intval($_POST['product_id']);
 
-    // Check if product is already in cart
+     
     $check = $conn->query("SELECT * FROM cart WHERE username='$username' AND product_id=$product_id");
     if ($check->num_rows > 0) {
         $conn->query("UPDATE cart SET quantity = quantity + 1 WHERE username='$username' AND product_id=$product_id");

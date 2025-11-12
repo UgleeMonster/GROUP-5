@@ -2,7 +2,7 @@
 session_start();
 include "db/dbconnect.php";
 
-// Check if user is logged in
+ 
 if (!isset($_SESSION['username'])) {
     header("Location: login.php");
     exit();
@@ -10,7 +10,7 @@ if (!isset($_SESSION['username'])) {
 
 $username = $_SESSION['username'];
 
-// Fetch current user info
+ 
 $userQuery = $conn->prepare("SELECT email, role FROM users WHERE username=? LIMIT 1");
 $userQuery->bind_param("s", $username);
 $userQuery->execute();
@@ -117,7 +117,7 @@ $role  = $userData['role'] ?? 'Customer';
 </footer>
 
 <script>
-// PROFILE DROPDOWN TOGGLE
+ 
 const profileBtn = document.querySelector('.profile-btn');
 const profileDropdown = document.querySelector('.profile-dropdown');
 
@@ -125,7 +125,7 @@ profileBtn.addEventListener('click', () => {
     profileDropdown.classList.toggle('show');
 });
 
-// Close dropdown if clicked outside
+ 
 window.addEventListener('click', function(e) {
     if (!profileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
         profileDropdown.classList.remove('show');

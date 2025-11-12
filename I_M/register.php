@@ -1,5 +1,6 @@
 <?php
-include "db/dbconnect.php"; // use your db connection file
+session_start();
+include "db/dbconnect.php";  
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $conn->real_escape_string($_POST['username']);
@@ -11,19 +12,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($password !== $confirm) {
         $error = "Passwords do not match.";
     } else {
-        // Check for duplicate username or email
         $check = $conn->query("SELECT * FROM users WHERE username='$username' OR email='$email'");
         if ($check->num_rows > 0) {
             $error = "Username or email already exists.";
         } else {
-            // Default role: customer
             $role = "customer";
-            
-            // Insert user into database
             $sql = "INSERT INTO users (username, address, email, password, role) 
                     VALUES ('$username', '$address', '$email', '$password', '$role')";
-            
             if ($conn->query($sql)) {
+                $_SESSION['username'] = $username;
+                $_SESSION['email'] = $email;
+                $_SESSION['role'] = $role;
+                $_SESSION['address'] = $address;
                 header("Location: home.php");
                 exit();
             } else {

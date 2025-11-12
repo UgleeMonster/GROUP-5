@@ -9,23 +9,23 @@ if (!isset($_SESSION['username'])) {
 
 $username = $_SESSION['username'];
 
-// Fetch current user info
+ 
 $userQuery = $conn->prepare("SELECT email, role, address, phone FROM users WHERE username=? LIMIT 1");
 $userQuery->bind_param("s", $username);
 $userQuery->execute();
 $userResult = $userQuery->get_result();
 $userData = $userResult->fetch_assoc();
 
-// Fallbacks
+ 
 $email = $userData['email'] ?? 'No email';
 $role  = $userData['role'] ?? 'Customer';
 $default_address = $userData['address'] ?? '';
 $default_phone = $userData['phone'] ?? '';
 
-// Determine items to checkout
+ 
 $cart_items = [];
 
-// 1️⃣ Check if user submitted selected items from cart page
+ 
 if (!empty($_POST['selected_items'])) {
     $selected_items = $_POST['selected_items'];
     $ids = implode(",", array_map('intval', $selected_items));
@@ -39,7 +39,7 @@ if (!empty($_POST['selected_items'])) {
         $cart_items[] = $row;
     }
 } 
-// 2️⃣ Check if user did a direct buy
+ 
 elseif (isset($_SESSION['checkout_item'])) {
     $item = $_SESSION['checkout_item'];
     $product_id = $item['product_id'];
@@ -57,7 +57,7 @@ elseif (isset($_SESSION['checkout_item'])) {
         ];
     }
 } 
-// 3️⃣ Fallback: load all cart items if user accessed checkout.php directly
+ 
 else {
     $cart_items_result = $conn->query("
         SELECT cart.id AS cart_id, products.id AS product_id, products.name, products.price, products.image, cart.quantity
@@ -70,7 +70,7 @@ else {
     }
 }
 
-// Helper: generate receipt code
+ 
 function generateReceiptCode($length = 10) {
     $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     $code = '';
@@ -80,17 +80,17 @@ function generateReceiptCode($length = 10) {
     return $code;
 }
 
-// Initialize
+ 
 $success_msg = '';
 $receipt_code = '';
 $hide_form = false;
 
-// Only unset order_placed if this is a fresh visit without submitting the form
+ 
 if (!isset($_POST['place_order'])) {
     unset($_SESSION['order_placed']);
 }
 
-// Place new order
+ 
 if (isset($_POST['place_order'])) {
     if (empty($cart_items)) {
         $success_msg = "You didn't order anything :3";
@@ -101,7 +101,7 @@ if (isset($_POST['place_order'])) {
         $payment_type = $_POST['payment_type'];
         $payment_number = $_POST['payment_number'] ?? NULL;
 
-        // Generate receipt code for this order
+         
         $receipt_code = generateReceiptCode();
 
         foreach ($cart_items as $item) {
@@ -110,12 +110,12 @@ if (isset($_POST['place_order'])) {
             $price = $item['price'];
             $total = $quantity * $price;
 
-            // Apply 20% discount if quantity > 5
+             
             if ($quantity > 5) {
                 $total *= 0.8;
             }
 
-            // Record transaction
+             
             $stmt = $conn->prepare("INSERT INTO purchases 
                 (customer_name, product_name, quantity, price, total, purchase_date, payment_type, payment_number, receipt_code)
                 VALUES (?, ?, ?, ?, ?, NOW(), ?, ?, ?)
@@ -133,7 +133,7 @@ if (isset($_POST['place_order'])) {
             );
             $stmt->execute();
 
-            // Reduce stock and remove from cart if applicable
+             
             if (isset($item['cart_id']) && $item['cart_id'] != 0) {
                 $conn->query("UPDATE products SET stock = stock - $quantity WHERE id=$product_id");
                 $conn->query("DELETE FROM cart WHERE id={$item['cart_id']} AND username='$username'");
@@ -154,7 +154,7 @@ if (isset($_SESSION['order_placed']) && $_SESSION['order_placed'] === true) {
     $hide_form = true;
 }
 
-// Calculate totals
+ 
 $subtotal = 0;
 $total_quantity = 0;
 foreach ($cart_items as $item) {
@@ -301,7 +301,7 @@ paymentType.addEventListener('change', () => {
     }
 });
 
-// PROFILE DROPDOWN
+ 
 const profileBtn = document.querySelector('.profile-btn');
 const profileDropdown = document.querySelector('.profile-dropdown');
 profileBtn.addEventListener('click', () => {
@@ -313,7 +313,7 @@ window.addEventListener('click', (e) => {
     }
 });
 
-// ✅ COPY RECEIPT CODE
+ 
 function copyReceiptCode() {
     const code = document.getElementById("receiptCode").textContent;
     navigator.clipboard.writeText(code).then(() => {

@@ -1,12 +1,12 @@
 <?php
-include 'db_connect.php'; // Make sure this connects to your DB
+include 'db_connect.php';  
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $fullname = $_POST['fullname'];
     $email = $_POST['email'];
     $subject = $_POST['subject'];
     $message = $_POST['message'];
-    $date_sent = date('Y-m-d H:i:s'); // auto-generate current timestamp
+    $date_sent = date('Y-m-d H:i:s');  
 
     $sql = "INSERT INTO messages (fullname, email, subject, message, date_sent)
             VALUES ('$fullname', '$email', '$subject', '$message', '$date_sent')";

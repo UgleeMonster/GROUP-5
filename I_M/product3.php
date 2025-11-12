@@ -2,7 +2,7 @@
 session_start();
 include "db/dbconnect.php";
 
-// Check if user is logged in
+ 
 if (!isset($_SESSION['username'])) {
     header("Location: login.php");
     exit();
@@ -10,7 +10,7 @@ if (!isset($_SESSION['username'])) {
 
 $username = $_SESSION['username'];
 
-// Fetch current user info
+ 
 $userQuery = $conn->prepare("SELECT email, role FROM users WHERE username=? LIMIT 1");
 $userQuery->bind_param("s", $username);
 $userQuery->execute();
@@ -20,7 +20,7 @@ $userData = $userResult->fetch_assoc();
 $email = $userData['email'] ?? 'No email';
 $role  = $userData['role'] ?? 'Customer';
 
-// Handle direct buy (go to checkout with selected product)
+ 
 if (isset($_POST['buy_now'])) {
     $_SESSION['checkout_item'] = [
         'product_id' => $_POST['product_id'],
@@ -30,7 +30,7 @@ if (isset($_POST['buy_now'])) {
     exit();
 }
 
-// Fetch Kids products
+ 
 $products = $conn->query("SELECT * FROM products WHERE category='Kids' ORDER BY id ASC");
 ?>
 
@@ -137,7 +137,7 @@ document.querySelectorAll('.add-btn').forEach(btn => {
     });
 });
 
-// PROFILE DROPDOWN TOGGLE
+ 
 const profileBtn = document.querySelector('.profile-btn');
 const profileDropdown = document.querySelector('.profile-dropdown');
 
@@ -145,7 +145,7 @@ profileBtn.addEventListener('click', () => {
     profileDropdown.classList.toggle('show');
 });
 
-// Close dropdown if clicked outside
+ 
 window.addEventListener('click', function(e) {
     if (!profileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
         profileDropdown.classList.remove('show');

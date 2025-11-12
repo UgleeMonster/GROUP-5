@@ -24,7 +24,7 @@ body {
   overflow: hidden;
 }
 
-/* Left side (brown background + logo) */
+ 
 .left-panel {
   background: #c4a484;
   flex: 1;
@@ -38,7 +38,7 @@ body {
   height: auto;
 }
 
-/* Right side (login form) */
+ 
 .right-panel {
   flex: 1.4;
   background: #d9d9d9;
@@ -55,7 +55,7 @@ body {
   color: #000;
 }
 
-/* Social icons row */
+ 
 .social-login {
   display: flex;
   gap: 40px;
@@ -73,7 +73,7 @@ body {
   transform: scale(1.1);
 }
 
-/* Login form */
+ 
 .login-form {
   display: flex;
   flex-direction: column;
@@ -118,7 +118,7 @@ body {
   background: #333;
 }
 
-/* Signup link */
+ 
 .signup {
   text-align: right;
   margin-top: 35px;

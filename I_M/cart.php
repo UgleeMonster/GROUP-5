@@ -8,25 +8,25 @@ if (!isset($_SESSION['username'])) {
 }
 
 $username = $_SESSION['username'];
-// Fetch current user info
+ 
 $userQuery = $conn->prepare("SELECT email, role FROM users WHERE username=? LIMIT 1");
 $userQuery->bind_param("s", $username);
 $userQuery->execute();
 $userResult = $userQuery->get_result();
 $userData = $userResult->fetch_assoc();
 
-// Fallback in case something is missing
+ 
 $email = $userData['email'] ?? 'No email';
 $role  = $userData['role'] ?? 'Customer';
 
 
-// Handle delete via AJAX
+ 
 if (isset($_POST['delete_item'])) {
     $cart_id = $_POST['cart_id'];
     $conn->query("DELETE FROM cart WHERE id=$cart_id AND username='$username'");
 }
 
-// Fetch cart items with stock info
+ 
 $cart_items = $conn->query("
     SELECT cart.id AS cart_id, products.id AS product_id, products.name, products.price, products.image, products.stock, cart.quantity
     FROM cart 
@@ -153,14 +153,14 @@ profileBtn.addEventListener('click', () => {
     profileDropdown.classList.toggle('show');
 });
 
-// Close dropdown if clicked outside
+ 
 window.addEventListener('click', function(e) {
     if (!profileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
         profileDropdown.classList.remove('show');
     }
 });
 
-// --- Cart JS Functionality ---
+ 
 const subtotalEl = document.getElementById('subtotal');
 const shippingEl = document.getElementById('shipping');
 const grandtotalEl = document.getElementById('grandtotal');
@@ -202,7 +202,7 @@ document.querySelectorAll('.cart-item-row:not(.empty-row)').forEach(row=>{
     const cart_id = row.dataset.id;
     const stock = parseInt(row.dataset.stock);
 
-    if(!dec || !inc) return; // skip out-of-stock
+    if(!dec || !inc) return;  
 
     function updateDB(qty){
         fetch('update_cart_quantity.php', {

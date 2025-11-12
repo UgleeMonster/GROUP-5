@@ -1,5 +1,12 @@
 <?php
 session_start();
+if (isset($_GET['logout'])) {
+    session_unset();
+    session_destroy();
+    header("Location: login.php");
+    exit();
+}
+
 include "db/dbconnect.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -71,6 +78,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </form>
 
             <p class="signup"><a href="register.php">Create an account</a></p>
+            <?php if(isset($_SESSION['username'])): ?>
+                <p><a href="login.php?logout=1">Logout</a></p>
+            <?php endif; ?>
         </div>
     </div>
 </body>

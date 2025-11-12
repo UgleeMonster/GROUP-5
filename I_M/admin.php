@@ -7,7 +7,7 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] != 'admin') {
 
 include "db/dbconnect.php";
 
-// Add product
+ 
 if (isset($_POST['add_product'])) {
     $name = $_POST['name'];
     $stock = $_POST['stock'];
@@ -18,30 +18,30 @@ if (isset($_POST['add_product'])) {
     $conn->query($sql);
 }
 
-// Update stock
+ 
 if (isset($_POST['update_stock'])) {
     $id = $_POST['product_id'];
     $change = $_POST['change'];
     $conn->query("UPDATE products SET stock = $change WHERE id=$id");
 }
 
-// Delete product
+ 
 if (isset($_POST['delete_product'])) {
     $id = $_POST['product_id'];
     $conn->query("DELETE FROM products WHERE id=$id");
 }
 
-// Clear logbook history
+ 
 if (isset($_POST['clear_logbook'])) {
     $conn->query("DELETE FROM purchases");
 }
 
-// Clear inbox messages
+ 
 if (isset($_POST['clear_inbox'])) {
     $conn->query("DELETE FROM messages");
 }
 
-// Search products
+ 
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 $products = $conn->query("SELECT * FROM products 
     WHERE id LIKE '%$search%' 
@@ -49,16 +49,16 @@ $products = $conn->query("SELECT * FROM products
     OR category LIKE '%$search%' 
     ORDER BY id ASC");
 
-// Purchases (newest first)
+ 
 $purchases = $conn->query("SELECT * FROM purchases ORDER BY purchase_date DESC");
 
-// Users
+ 
 $users = $conn->query("SELECT id, username, address, email, role FROM users ORDER BY id ASC");
 
-// Messages
+ 
 $messages = $conn->query("SELECT * FROM messages ORDER BY date_sent DESC");
 
-// Calculate income totals
+ 
 $today = date('Y-m-d');
 $weekStart = date('Y-m-d', strtotime('monday this week'));
 $monthStart = date('Y-m-01');

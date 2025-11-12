@@ -2,7 +2,7 @@
 session_start();
 include "db/dbconnect.php";
 
-// Check if user is logged in
+ 
 if (!isset($_SESSION['username'])) {
     header("Location: login.php");
     exit();
@@ -10,7 +10,7 @@ if (!isset($_SESSION['username'])) {
 
 $username = $_SESSION['username'];
 
-// Handle direct buy (go to checkout with selected product)
+ 
 if (isset($_POST['buy_now'])) {
     $_SESSION['checkout_item'] = [
         'product_id' => $_POST['product_id'],
@@ -20,16 +20,16 @@ if (isset($_POST['buy_now'])) {
     exit();
 }
 
-// Fetch Mens products
+ 
 $products = $conn->query("SELECT * FROM products WHERE category='Mens' ORDER BY id ASC");
-// Fetch current user info
+ 
 $userQuery = $conn->prepare("SELECT email, role FROM users WHERE username=? LIMIT 1");
 $userQuery->bind_param("s", $username);
 $userQuery->execute();
 $userResult = $userQuery->get_result();
 $userData = $userResult->fetch_assoc();
 
-// If something goes wrong, fallback
+ 
 $email = $userData['email'] ?? 'No email';
 $role  = $userData['role'] ?? 'Customer';
 
@@ -115,7 +115,7 @@ $role  = $userData['role'] ?? 'Customer';
 </main>
 
 <script>
-// ADD TO CART
+ 
 document.querySelectorAll('.add-btn').forEach(btn => {
     btn.addEventListener('click', function() {
         const productId = this.getAttribute('data-id');
@@ -139,7 +139,7 @@ document.querySelectorAll('.add-btn').forEach(btn => {
     });
 });
 
-// PROFILE DROPDOWN TOGGLE
+ 
 const profileBtn = document.querySelector('.profile-btn');
 const profileDropdown = document.querySelector('.profile-dropdown');
 
@@ -147,7 +147,7 @@ profileBtn.addEventListener('click', () => {
     profileDropdown.classList.toggle('show');
 });
 
-// Close dropdown if clicked outside
+ 
 window.addEventListener('click', function(e) {
     if (!profileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
         profileDropdown.classList.remove('show');

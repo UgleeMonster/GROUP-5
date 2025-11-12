@@ -1,4 +1,4 @@
-/* ===== GLOBAL ===== */
+ 
 body {
     font-family: 'Inter', sans-serif;
     background-color: #c7c2c2;
@@ -7,7 +7,7 @@ body {
     color: #000;
 }
 
-/* ===== HEADER ===== */
+ 
 header {
     display: flex;
     align-items: center;
@@ -21,7 +21,7 @@ header {
     display: block;
 }
 
-/* ===== NAVIGATION ===== */
+ 
 .nav-center {
     background-color: #d9d9d9;
     border-radius: 90px;
@@ -46,7 +46,7 @@ header {
     font-weight: 600;
 }
 
-/* ===== RIGHT ICONS ===== */
+ 
 .right-icons {
     display: flex;
     align-items: center;
@@ -71,7 +71,7 @@ header {
     transform: scale(1.1);
 }
 
-/* ===== PROFILE DROPDOWN ===== */
+ 
 .profile-wrapper {
     position: relative;
     display: inline-block;
@@ -179,14 +179,14 @@ header {
     border-color: transparent transparent #f5f5f5 transparent;
 }
 
-/* ===== MAIN LAYOUT ===== */
+ 
 .checkout-main {
     max-width: 900px;
     margin: 50px auto;
     padding: 0 20px;
 }
 
-/* SUCCESS MESSAGE */
+ 
 .success-msg {
     background-color: #d4edda;
     color: #155724;
@@ -197,7 +197,7 @@ header {
     font-weight: 500;
 }
 
-/* ===== CHECKOUT FORM ===== */
+ 
 .checkout-form {
     background-color: #d9d9d9;
     padding: 25px;
@@ -226,7 +226,7 @@ header {
     font-size: 14px;
 }
 
-/* ITEMS LIST */
+ 
 .checkout-items {
     display: flex;
     flex-direction: column;
@@ -258,13 +258,13 @@ header {
     font-weight: 500;
 }
 
-/* TOTALS */
+ 
 .checkout-totals p {
     margin: 5px 0;
     font-weight: 500;
 }
 
-/* PLACE ORDER BUTTON */
+ 
 .place-order-btn {
     margin-top: 20px;
     width: 100%;
@@ -301,7 +301,7 @@ header {
     font-family: 'Inter', sans-serif;
     font-size: 20px;
     font-weight: 600;
-    color: #FFD700; /* golden text */
+    color: #FFD700;  
     animation: floatMessage 4s ease-in-out infinite alternate;
     text-align: center;
 }
@@ -346,13 +346,13 @@ header {
     animation: float 2s ease-in-out infinite alternate;
 }
 
-/* Smooth pop animation */
+ 
 @keyframes popCenter {
     20% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
     100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
 }
 
-/* Gentle floating animation */
+ 
 @keyframes floatCenter {
     0% { transform: translate(-50%, -52%); }
     100% { transform: translate(-50%, -48%); }
