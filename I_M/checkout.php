@@ -9,23 +9,28 @@ if (!isset($_SESSION['username'])) {
 
 $username = $_SESSION['username'];
 
- 
-$userQuery = $conn->prepare("SELECT email, role, address, phone FROM users WHERE username=? LIMIT 1");
-$userQuery->bind_param("s", $username);
-$userQuery->execute();
-$userResult = $userQuery->get_result();
-$userData = $userResult->fetch_assoc();
+$userData = [];
 
- 
-$email = $userData['email'] ?? 'No email';
+$stmt = $conn->prepare("SELECT email, role, address FROM users WHERE username=? LIMIT 1");
+if ($stmt) {
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $userData = $result->fetch_assoc() ?? [];
+    $stmt->close();
+} else {
+    $safeUser = $conn->real_escape_string($username);
+    $res = $conn->query("SELECT email, role, address, phone FROM users WHERE username='$safeUser' LIMIT 1");
+    $userData = $res ? $res->fetch_assoc() : [];
+}
+
+$email = $userData['email'] ?? '';
 $role  = $userData['role'] ?? 'Customer';
 $default_address = $userData['address'] ?? '';
 $default_phone = $userData['phone'] ?? '';
 
- 
 $cart_items = [];
 
- 
 if (!empty($_POST['selected_items'])) {
     $selected_items = $_POST['selected_items'];
     $ids = implode(",", array_map('intval', $selected_items));
@@ -33,18 +38,15 @@ if (!empty($_POST['selected_items'])) {
         SELECT cart.id AS cart_id, products.id AS product_id, products.name, products.price, products.image, cart.quantity
         FROM cart 
         JOIN products ON cart.product_id = products.id
-        WHERE cart.id IN ($ids) AND cart.username='$username'
+        WHERE cart.id IN ($ids) AND cart.username='".$conn->real_escape_string($username)."'
     ");
     while ($row = $cart_items_result->fetch_assoc()) {
         $cart_items[] = $row;
     }
-} 
- 
-elseif (isset($_SESSION['checkout_item'])) {
+} elseif (isset($_SESSION['checkout_item'])) {
     $item = $_SESSION['checkout_item'];
-    $product_id = $item['product_id'];
-    $quantity = $item['quantity'];
-
+    $product_id = (int)$item['product_id'];
+    $quantity = (int)$item['quantity'];
     $product = $conn->query("SELECT * FROM products WHERE id=$product_id")->fetch_assoc();
     if ($product) {
         $cart_items[] = [
@@ -56,21 +58,18 @@ elseif (isset($_SESSION['checkout_item'])) {
             'quantity' => $quantity
         ];
     }
-} 
- 
-else {
+} else {
     $cart_items_result = $conn->query("
         SELECT cart.id AS cart_id, products.id AS product_id, products.name, products.price, products.image, cart.quantity
         FROM cart 
         JOIN products ON cart.product_id = products.id
-        WHERE cart.username='$username'
+        WHERE cart.username='".$conn->real_escape_string($username)."'
     ");
     while ($row = $cart_items_result->fetch_assoc()) {
         $cart_items[] = $row;
     }
 }
 
- 
 function generateReceiptCode($length = 10) {
     $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     $code = '';
@@ -80,17 +79,14 @@ function generateReceiptCode($length = 10) {
     return $code;
 }
 
- 
 $success_msg = '';
 $receipt_code = '';
 $hide_form = false;
 
- 
 if (!isset($_POST['place_order'])) {
     unset($_SESSION['order_placed']);
 }
 
- 
 if (isset($_POST['place_order'])) {
     if (empty($cart_items)) {
         $success_msg = "You didn't order anything :3";
@@ -101,46 +97,35 @@ if (isset($_POST['place_order'])) {
         $payment_type = $_POST['payment_type'];
         $payment_number = $_POST['payment_number'] ?? NULL;
 
-         
         $receipt_code = generateReceiptCode();
 
+        $insert_stmt = $conn->prepare("INSERT INTO purchases (customer_name, product_name, quantity, price, total, purchase_date, payment_type, payment_number, receipt_code) VALUES (?, ?, ?, ?, ?, NOW(), ?, ?, ?)");
         foreach ($cart_items as $item) {
-            $product_id = $item['product_id'];
-            $quantity = $item['quantity'];
-            $price = $item['price'];
-            $total = $quantity * $price;
+            $product_id = (int)$item['product_id'];
+            $quantity = (int)$item['quantity'];
+            $price = (float)$item['price'];
+            $total = $quantity * $price; // We'll apply discount on grand total, not per item
 
-             
-            if ($quantity > 5) {
-                $total *= 0.8;
+            if ($insert_stmt) {
+                $insert_stmt->bind_param("ssiddsss", $username, $item['name'], $quantity, $price, $total, $payment_type, $payment_number, $receipt_code);
+                $insert_stmt->execute();
+            } else {
+                $safeCustomer = $conn->real_escape_string($username);
+                $safeName = $conn->real_escape_string($item['name']);
+                $safePT = $conn->real_escape_string($payment_type);
+                $safePN = $payment_number !== null ? "'".$conn->real_escape_string($payment_number)."'" : "NULL";
+                $safeRC = $conn->real_escape_string($receipt_code);
+                $conn->query("INSERT INTO purchases (customer_name, product_name, quantity, price, total, purchase_date, payment_type, payment_number, receipt_code) VALUES ('$safeCustomer', '$safeName', $quantity, $price, $total, NOW(), '$safePT', $safePN, '$safeRC')");
             }
 
-             
-            $stmt = $conn->prepare("INSERT INTO purchases 
-                (customer_name, product_name, quantity, price, total, purchase_date, payment_type, payment_number, receipt_code)
-                VALUES (?, ?, ?, ?, ?, NOW(), ?, ?, ?)
-            ");
-            $stmt->bind_param(
-                "ssiddsss",
-                $username,
-                $item['name'],
-                $quantity,
-                $price,
-                $total,
-                $payment_type,
-                $payment_number,
-                $receipt_code
-            );
-            $stmt->execute();
-
-             
             if (isset($item['cart_id']) && $item['cart_id'] != 0) {
                 $conn->query("UPDATE products SET stock = stock - $quantity WHERE id=$product_id");
-                $conn->query("DELETE FROM cart WHERE id={$item['cart_id']} AND username='$username'");
+                $conn->query("DELETE FROM cart WHERE id={$item['cart_id']} AND username='".$conn->real_escape_string($username)."'");
             } else {
                 $conn->query("UPDATE products SET stock = stock - $quantity WHERE id=$product_id");
             }
         }
+        if ($insert_stmt) $insert_stmt->close();
 
         unset($_SESSION['checkout_item']);
         $_SESSION['order_placed'] = true;
@@ -154,31 +139,36 @@ if (isset($_SESSION['order_placed']) && $_SESSION['order_placed'] === true) {
     $hide_form = true;
 }
 
- 
+// Calculate subtotal and total quantity
 $subtotal = 0;
 $total_quantity = 0;
 foreach ($cart_items as $item) {
     $subtotal += $item['price'] * $item['quantity'];
     $total_quantity += $item['quantity'];
 }
-$discount = ($total_quantity > 5) ? $subtotal * 0.2 : 0;
+
+// GRAND DISCOUNT LOGIC
+$discount_percent = 0;
+if ($total_quantity >= 5) { // 5 or more items triggers discount
+    $discount_percent = 20 + (($total_quantity - 5) * 4); // 20% + 4% per extra item
+    if ($discount_percent > 80) $discount_percent = 80; // max cap
+}
+$discount = $subtotal * ($discount_percent / 100);
 $grand_total = $subtotal - $discount;
 $shipping_fee = 50;
 $estimated_delivery = date('F j, Y', strtotime('+5 days'));
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Checkout - New Dawn Thrift</title>
-<link rel="stylesheet" href="checkout.css?v=6">
+<link rel="stylesheet" href="checkout.css?v=5" />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 </head>
 <body>
-
 <header>
     <div class="logo-left"><img src="logo.png" alt="New Dawn Thrift Logo"></div>
     <nav class="nav-center">
@@ -212,7 +202,7 @@ $estimated_delivery = date('F j, Y', strtotime('+5 days'));
         <?php if($receipt_code): ?>
             <div class="receipt-popup" id="receiptPopup">
                 🎉 Transaction Successful!<br>
-                Receipt Code: <span id="receiptCode"><?= $receipt_code ?></span><br>
+                Receipt Code: <span id="receiptCode"><?= htmlspecialchars($receipt_code) ?></span><br>
                 <button class="copy-btn" onclick="copyReceiptCode()">Copy Code</button>
             </div>
         <?php endif; ?>
@@ -251,13 +241,13 @@ $estimated_delivery = date('F j, Y', strtotime('+5 days'));
             <?php else: ?>
                 <?php foreach($cart_items as $item): ?>
                     <div class="checkout-item">
-                        <img src="<?= $item['image'] ?>" alt="<?= $item['name'] ?>">
+                        <img src="<?= htmlspecialchars($item['image']) ?>" alt="<?= htmlspecialchars($item['name']) ?>">
                         <div class="item-details">
-                            <p><strong><?= $item['name'] ?></strong></p>
+                            <p><strong><?= htmlspecialchars($item['name']) ?></strong></p>
                             <p>Price: ₱<?= number_format($item['price'],2) ?></p>
                             <p>Qty: <?= $item['quantity'] ?></p>
-                            <?php if($item['quantity']>5): ?>
-                                <p class="discount">🎁 20% Discount Applied!</p>
+                            <?php if($discount > 0): ?>
+                                <p class="discount">🎁 Part of <?= $discount_percent ?>% Grand Discount!</p>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -267,7 +257,11 @@ $estimated_delivery = date('F j, Y', strtotime('+5 days'));
 
         <div class="checkout-totals">
             <p>Subtotal: ₱<?= number_format($subtotal,2) ?></p>
-            <p>Discount: ₱<?= number_format($discount,2) ?></p>
+            <?php if($discount > 0): ?>
+                <p>Discount (<?= $discount_percent ?>% off): ₱<?= number_format($discount,2) ?></p>
+            <?php else: ?>
+                <p>Discount: ₱0.00</p>
+            <?php endif; ?>
             <p>Shipping Fee: ₱<?= number_format($shipping_fee,2) ?></p>
             <p><strong>Grand Total: ₱<?= number_format($grand_total+$shipping_fee,2) ?></strong></p>
             <p>Estimated Delivery: <?= $estimated_delivery ?></p>
@@ -275,7 +269,7 @@ $estimated_delivery = date('F j, Y', strtotime('+5 days'));
 
         <?php foreach($cart_items as $item): ?>
             <?php if(isset($item['cart_id']) && $item['cart_id'] != 0): ?>
-                <input type="hidden" name="selected_items[]" value="<?= $item['cart_id'] ?>">
+                <input type="hidden" name="selected_items[]" value="<?= intval($item['cart_id']) ?>">
             <?php endif; ?>
         <?php endforeach; ?>
 
@@ -301,7 +295,6 @@ paymentType.addEventListener('change', () => {
     }
 });
 
- 
 const profileBtn = document.querySelector('.profile-btn');
 const profileDropdown = document.querySelector('.profile-dropdown');
 profileBtn.addEventListener('click', () => {
@@ -313,9 +306,10 @@ window.addEventListener('click', (e) => {
     }
 });
 
- 
 function copyReceiptCode() {
-    const code = document.getElementById("receiptCode").textContent;
+    const codeEl = document.getElementById("receiptCode");
+    if (!codeEl) return;
+    const code = codeEl.textContent;
     navigator.clipboard.writeText(code).then(() => {
         alert("✅ Receipt code copied to clipboard: " + code);
     });

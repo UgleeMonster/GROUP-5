@@ -21,8 +21,16 @@ if (isset($_POST['add_product'])) {
  
 if (isset($_POST['update_stock'])) {
     $id = $_POST['product_id'];
-    $change = $_POST['change'];
-    $conn->query("UPDATE products SET stock = $change WHERE id=$id");
+    $new_name = $_POST['name'];
+    $new_price = $_POST['price'];
+    $new_stock = $_POST['stock'];
+
+    $safe_name = $conn->real_escape_string($new_name);
+    $safe_price = floatval($new_price);
+    $safe_stock = intval($new_stock);
+    $safe_id = intval($id);
+
+    $conn->query("UPDATE products SET name='$safe_name', price=$safe_price, stock=$safe_stock WHERE id=$safe_id");
 }
 
  
@@ -127,9 +135,12 @@ $yearly_income = $conn->query("SELECT SUM(total) AS total FROM purchases WHERE D
                     <td>
                         <form method="POST" style="display:inline;">
                             <input type="hidden" name="product_id" value="<?= $prod['id'] ?>">
-                            <input type="number" name="change" value="<?= $prod['stock'] ?>" style="width:60px">
+                            <input type="text" name="name" value="<?= htmlspecialchars($prod['name']) ?>" style="width:120px">
+                            <input type="number" step="0.01" name="price" value="<?= $prod['price'] ?>" style="width:80px">
+                            <input type="number" name="stock" value="<?= $prod['stock'] ?>" style="width:60px">
                             <button type="submit" name="update_stock" class="update-btn">Update</button>
                         </form>
+
                         <form method="POST" style="display:inline;">
                             <input type="hidden" name="product_id" value="<?= $prod['id'] ?>">
                             <button type="submit" name="delete_product" class="delete-btn">Delete</button>
