@@ -16,6 +16,8 @@ if (!isset($_SESSION['username'])) {
 }
 
 $username = $_SESSION['username'];
+$user = $conn->query("SELECT username, email, role FROM users WHERE username='$username'")->fetch_assoc();
+
 
 // Fetch user data
 $userData = [];
@@ -156,37 +158,36 @@ if (isset($_POST['place_order'])) {
 
         // Send email
         $mail = new PHPMailer(true);
-try {
-    $mail->SMTPDebug = 0; // <-- show debug info in browser
-    $mail->isSMTP();
-    $mail->Host = 'smtp.gmail.com';
-    $mail->SMTPAuth = true;
-    $mail->Username = 'williejaytomascalacala@gmail.com'; // your Gmail
-    $mail->Password = 'rnjg comr gdml nwnj';   // Gmail App Password
-    $mail->SMTPSecure = 'ssl';
-    $mail->Port = 465;
+        try {
+            $mail->SMTPDebug = 0; // <-- debug output disabled
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'williejaytomascalacala@gmail.com'; // your Gmail
+            $mail->Password = 'rnjg comr gdml nwnj';   // Gmail App Password
+            $mail->SMTPSecure = 'ssl';
+            $mail->Port = 465;
 
+            $mail->setFrom('williejaytomascalacala@gmail.com', 'New Dawn Thrift');
+            $mail->addAddress($shipping_email, $username);
 
-    $mail->setFrom('williejaytomascalacala@gmail.com', 'New Dawn Thrift');
-    $mail->addAddress($shipping_email, $username);
+            $mail->isHTML(true);
+            $mail->Subject = 'Your Order Receipt';
+            $mail->Body = "
+                <h2>Thank you for your order, $username!</h2>
+                <p>Receipt Code: <strong>$receipt_code</strong></p>
+                <p>Subtotal: ₱".number_format($subtotal,2)."</p>
+                <p>Discount ({$discount_percent}%): -₱".number_format($discount,2)."</p>
+                <p>Shipping Fee: ₱".number_format($shipping_fee,2)."</p>
+                <p><strong>Grand Total: ₱".number_format($grand_total + $shipping_fee,2)."</strong></p>
+                <p>Estimated Delivery: $estimated_delivery</p>
+            ";
 
-    $mail->isHTML(true);
-    $mail->Subject = 'Your Order Receipt';
-    $mail->Body = "
-        <h2>Thank you for your order, $username!</h2>
-        <p>Receipt Code: <strong>$receipt_code</strong></p>
-        <p>Subtotal: ₱".number_format($subtotal,2)."</p>
-        <p>Discount ({$discount_percent}%): -₱".number_format($discount,2)."</p>
-        <p>Shipping Fee: ₱".number_format($shipping_fee,2)."</p>
-        <p><strong>Grand Total: ₱".number_format($grand_total + $shipping_fee,2)."</strong></p>
-        <p>Estimated Delivery: $estimated_delivery</p>
-    ";
-
-    $mail->send();
-    echo "✅ Email sent successfully!";
-} catch (Exception $e) {
-    echo "❌ Email failed: {$mail->ErrorInfo}";
-}
+            $mail->send();
+            // No browser output needed
+        } catch (Exception $e) {
+            // Optionally log $mail->ErrorInfo somewhere, but do not show to user
+        }
 
         $success_msg = "🎉 Order placed successfully! Thank you for shopping with us.";
         $hide_form = true;
@@ -197,7 +198,6 @@ if (isset($_SESSION['order_placed']) && $_SESSION['order_placed'] === true) {
     $hide_form = true;
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -228,8 +228,8 @@ if (isset($_SESSION['order_placed']) && $_SESSION['order_placed'] === true) {
                     <div class="username"><?= htmlspecialchars($username) ?></div>
                 </div>
                 <div class="profile-card-body">
-                    <p>Email: <?= htmlspecialchars($email) ?></p>
-                    <p>Role: <?= htmlspecialchars($role) ?></p>
+                    <p><strong>Email:</strong> <?= htmlspecialchars($user['email']) ?></p>
+                    <p><strong>Role:</strong> <?= ucfirst($user['role']) ?></p>
                     <a href="login.php" class="logout-btn">Logout</a>
                 </div>
             </div>

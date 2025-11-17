@@ -79,7 +79,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             <p class="signup"><a href="register.php">Create an account</a></p>
             <?php if(isset($_SESSION['username'])): ?>
-                <p><a href="login.php?logout=1">Logout</a></p>
+                <p><a href="login.php?logout=1"></a></p>
             <?php endif; ?>
         </div>
     </div>
