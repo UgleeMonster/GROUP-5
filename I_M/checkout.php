@@ -2,6 +2,14 @@
 session_start();
 include "db/dbconnect.php";
 
+// PHPMailer setup
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require __DIR__ . '/PHPMailer-master/src/Exception.php';
+require __DIR__ . '/PHPMailer-master/src/PHPMailer.php';
+require __DIR__ . '/PHPMailer-master/src/SMTP.php';
+
 if (!isset($_SESSION['username'])) {
     header("Location: login.php");
     exit();
@@ -9,19 +17,15 @@ if (!isset($_SESSION['username'])) {
 
 $username = $_SESSION['username'];
 
+// Fetch user data
 $userData = [];
-
-$stmt = $conn->prepare("SELECT email, role, address FROM users WHERE username=? LIMIT 1");
+$stmt = $conn->prepare("SELECT email, role, address, phone FROM users WHERE username=? LIMIT 1");
 if ($stmt) {
     $stmt->bind_param("s", $username);
     $stmt->execute();
     $result = $stmt->get_result();
     $userData = $result->fetch_assoc() ?? [];
     $stmt->close();
-} else {
-    $safeUser = $conn->real_escape_string($username);
-    $res = $conn->query("SELECT email, role, address, phone FROM users WHERE username='$safeUser' LIMIT 1");
-    $userData = $res ? $res->fetch_assoc() : [];
 }
 
 $email = $userData['email'] ?? '';
@@ -31,6 +35,7 @@ $default_phone = $userData['phone'] ?? '';
 
 $cart_items = [];
 
+// Fetch cart items
 if (!empty($_POST['selected_items'])) {
     $selected_items = $_POST['selected_items'];
     $ids = implode(",", array_map('intval', $selected_items));
@@ -70,6 +75,7 @@ if (!empty($_POST['selected_items'])) {
     }
 }
 
+// Generate receipt code
 function generateReceiptCode($length = 10) {
     $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     $code = '';
@@ -82,6 +88,24 @@ function generateReceiptCode($length = 10) {
 $success_msg = '';
 $receipt_code = '';
 $hide_form = false;
+
+// Subtotal, total quantity, discounts
+$subtotal = 0;
+$total_quantity = 0;
+foreach ($cart_items as $item) {
+    $subtotal += $item['price'] * $item['quantity'];
+    $total_quantity += $item['quantity'];
+}
+
+$discount_percent = 0;
+if ($total_quantity >= 5) {
+    $discount_percent = 20 + (($total_quantity - 5) * 4);
+    if ($discount_percent > 80) $discount_percent = 80;
+}
+$discount = $subtotal * ($discount_percent / 100);
+$grand_total = $subtotal - $discount;
+$shipping_fee = 50;
+$estimated_delivery = date('F j, Y', strtotime('+5 days'));
 
 if (!isset($_POST['place_order'])) {
     unset($_SESSION['order_placed']);
@@ -104,7 +128,7 @@ if (isset($_POST['place_order'])) {
             $product_id = (int)$item['product_id'];
             $quantity = (int)$item['quantity'];
             $price = (float)$item['price'];
-            $total = $quantity * $price; // We'll apply discount on grand total, not per item
+            $total = $quantity * $price;
 
             if ($insert_stmt) {
                 $insert_stmt->bind_param("ssiddsss", $username, $item['name'], $quantity, $price, $total, $payment_type, $payment_number, $receipt_code);
@@ -130,6 +154,40 @@ if (isset($_POST['place_order'])) {
         unset($_SESSION['checkout_item']);
         $_SESSION['order_placed'] = true;
 
+        // Send email
+        $mail = new PHPMailer(true);
+try {
+    $mail->SMTPDebug = 0; // <-- show debug info in browser
+    $mail->isSMTP();
+    $mail->Host = 'smtp.gmail.com';
+    $mail->SMTPAuth = true;
+    $mail->Username = 'williejaytomascalacala@gmail.com'; // your Gmail
+    $mail->Password = 'rnjg comr gdml nwnj';   // Gmail App Password
+    $mail->SMTPSecure = 'ssl';
+    $mail->Port = 465;
+
+
+    $mail->setFrom('williejaytomascalacala@gmail.com', 'New Dawn Thrift');
+    $mail->addAddress($shipping_email, $username);
+
+    $mail->isHTML(true);
+    $mail->Subject = 'Your Order Receipt';
+    $mail->Body = "
+        <h2>Thank you for your order, $username!</h2>
+        <p>Receipt Code: <strong>$receipt_code</strong></p>
+        <p>Subtotal: ₱".number_format($subtotal,2)."</p>
+        <p>Discount ({$discount_percent}%): -₱".number_format($discount,2)."</p>
+        <p>Shipping Fee: ₱".number_format($shipping_fee,2)."</p>
+        <p><strong>Grand Total: ₱".number_format($grand_total + $shipping_fee,2)."</strong></p>
+        <p>Estimated Delivery: $estimated_delivery</p>
+    ";
+
+    $mail->send();
+    echo "✅ Email sent successfully!";
+} catch (Exception $e) {
+    echo "❌ Email failed: {$mail->ErrorInfo}";
+}
+
         $success_msg = "🎉 Order placed successfully! Thank you for shopping with us.";
         $hide_form = true;
     }
@@ -138,26 +196,9 @@ if (isset($_POST['place_order'])) {
 if (isset($_SESSION['order_placed']) && $_SESSION['order_placed'] === true) {
     $hide_form = true;
 }
-
-// Calculate subtotal and total quantity
-$subtotal = 0;
-$total_quantity = 0;
-foreach ($cart_items as $item) {
-    $subtotal += $item['price'] * $item['quantity'];
-    $total_quantity += $item['quantity'];
-}
-
-// GRAND DISCOUNT LOGIC
-$discount_percent = 0;
-if ($total_quantity >= 5) { // 5 or more items triggers discount
-    $discount_percent = 20 + (($total_quantity - 5) * 4); // 20% + 4% per extra item
-    if ($discount_percent > 80) $discount_percent = 80; // max cap
-}
-$discount = $subtotal * ($discount_percent / 100);
-$grand_total = $subtotal - $discount;
-$shipping_fee = 50;
-$estimated_delivery = date('F j, Y', strtotime('+5 days'));
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
